@@ -28,6 +28,7 @@ from ltx_video.utils.diffusers_config_mapping import (
 PER_CHANNEL_STATISTICS_PREFIX = "per_channel_statistics."
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
+vae_old_config = "{\"_class_name\": \"CausalVideoAutoencoder\", \"dims\": 3, \"in_channels\": 3, \"out_channels\": 3, \"latent_channels\": 128, \"blocks\": [[\"res_x\", 4], [\"compress_all\", 1], [\"res_x_y\", 1], [\"res_x\", 3], [\"compress_all\", 1], [\"res_x_y\", 1], [\"res_x\", 3], [\"compress_all\", 1], [\"res_x\", 3], [\"res_x\", 4]], \"scaling_factor\": 1.0, \"norm_layer\": \"pixel_norm\", \"patch_size\": 4, \"latent_log_var\": \"uniform\", \"use_quant_conv\": false, \"causal_decoder\": false}"
 
 class CausalVideoAutoencoder(AutoencoderKLWrapper):
     @classmethod
@@ -109,8 +110,11 @@ class CausalVideoAutoencoder(AutoencoderKLWrapper):
                 metadata = f.metadata()
                 for k in f.keys():
                     state_dict[k] = f.get_tensor(k)
-            configs = json.loads(metadata["config"])
-            config = configs["vae"]
+            if metadata is not None and "config" in metadata:
+                configs = json.loads(metadata["config"])
+                config = configs["vae"]
+            else:
+                config = json.loads(vae_old_config)
 
         video_vae = cls.from_config(config)
         if "torch_dtype" in kwargs:
