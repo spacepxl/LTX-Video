@@ -232,7 +232,7 @@ def parse_args():
     parser.add_argument(
         "--output_dir",
         type = str,
-        default = "outputs",
+        default = "./outputs",
         help = "Output directory for training results"
         )
     parser.add_argument(
@@ -292,7 +292,7 @@ def parse_args():
     parser.add_argument(
         "--learning_rate",
         type = float,
-        default = 5e-7,
+        default = 1e-6,
         help = "Initial learning rate to use",
         )
     parser.add_argument(
@@ -322,13 +322,13 @@ def parse_args():
     parser.add_argument(
         "--fft_scale",
         type = float,
-        default = 0.02,
+        default = 0.0,
         help = "Scaling factor for the FFT loss",
         )
     parser.add_argument(
         "--temporal_scale",
         type = float,
-        default = 10.0,
+        default = 0.0,
         help = "Scaling factor for RAFT optical flow warped temporal loss",
         )
     parser.add_argument(
